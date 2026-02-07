@@ -1,0 +1,383 @@
+{
+  "info": {
+    "_postman_id": "0b8c9c8a-4e41-4e52-b84a-db7339fa15c7",
+    "name": "E-commerce Item API - Complete Collection",
+    "description": "Complete Postman collection for testing the E-commerce Item REST API with all endpoints including CRUD operations, search, and validation tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45494070",
+    "_collection_link": "https://go.postman.co/collection/45494070-0b8c9c8a-4e41-4e52-b84a-db7339fa15c7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Welcome & API Info",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.eql(\"Welcome to E-commerce Item API\");",
+              "});",
+              "",
+              "pm.test(\"Response has endpoints\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('endpoints');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items"
+          ]
+        },
+        "description": "Get welcome message and API information"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Get All Items",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"Array has at least 3 items\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.length).to.be.at.least(3);",
+              "});",
+              "",
+              "pm.test(\"Items have required fields\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    jsonData.forEach(function(item) {",
+              "        pm.expect(item).to.have.property('id');",
+              "        pm.expect(item).to.have.property('name');",
+              "        pm.expect(item).to.have.property('description');",
+              "        pm.expect(item).to.have.property('price');",
+              "        pm.expect(item).to.have.property('category');",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items/all",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items",
+            "all"
+          ]
+        },
+        "description": "Retrieve all items from the store"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Item by ID (Valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Item has correct ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).to.eql(1);",
+              "});",
+              "",
+              "pm.test(\"Item has all required fields\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.expect(jsonData).to.have.property('name');",
+              "    pm.expect(jsonData).to.have.property('description');",
+              "    pm.expect(jsonData).to.have.property('price');",
+              "    pm.expect(jsonData).to.have.property('category');",
+              "    pm.expect(jsonData).to.have.property('stockQuantity');",
+              "});",
+              "",
+              "pm.test(\"Price is a positive number\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.price).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items",
+            "1"
+          ]
+        },
+        "description": "Get a specific item by ID (ID=1)"
+      },
+      "response": []
+    },
+    {
+      "name": "4. Add New Item (Valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Item was created with ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.expect(jsonData.id).to.be.a('number');",
+              "    ",
+              "    // Store the ID for later use",
+              "    pm.environment.set(\"new_item_id\", jsonData.id);",
+              "});",
+              "",
+              "pm.test(\"Item has correct name\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.name).to.eql(\"Gaming Keyboard\");",
+              "});",
+              "",
+              "pm.test(\"Item has correct price\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.price).to.eql(79.99);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Gaming Keyboard\",\n    \"description\": \"Mechanical RGB keyboard with Cherry MX switches\",\n    \"price\": 79.99,\n    \"category\": \"Electronics\",\n    \"stockQuantity\": 25\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/items",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items"
+          ]
+        },
+        "description": "Add a new item with valid data"
+      },
+      "response": []
+    },
+    {
+      "name": "7. Get Item by ID (Not Found)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error message is present\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('message');",
+              "});",
+              "",
+              "pm.test(\"Error mentions item not found\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('not found');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items/999",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items",
+            "999"
+          ]
+        },
+        "description": "Test 404 error - item with ID 999 doesn't exist"
+      },
+      "response": []
+    },
+    {
+      "name": "12. Delete Item",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Delete confirmation message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('deleted successfully');",
+              "});",
+              "",
+              "pm.test(\"Deleted ID matches\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    var deletedId = pm.environment.get(\"new_item_id\");",
+              "    if (deletedId) {",
+              "        pm.expect(jsonData.deletedId).to.eql(parseInt(deletedId));",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items/{{new_item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items",
+            "{{new_item_id}}"
+          ]
+        },
+        "description": "Delete an item (uses ID from Add Item test)"
+      },
+      "response": []
+    },
+    {
+      "name": "13. Verify Deleted Item (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Item not found message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('not found');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/items/{{new_item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "items",
+            "{{new_item_id}}"
+          ]
+        },
+        "description": "Verify that the deleted item no longer exists"
+      },
+      "response": []
+    },
+    {
+      "name": "Update item by id",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
